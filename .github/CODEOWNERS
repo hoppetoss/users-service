@@ -1,0 +1,16 @@
+# Default owners for everything in the repo
+* @platform-team
+
+# CI/CD workflows
+/.github/ @platform-team @devops-team
+
+# Python application code
+/app/ @platform-team @backend-team
+
+# Docker configuration
+/Dockerfile @platform-team @devops-team
+/docker-compose.yml @platform-team @devops-team
+
+# Project configuration
+/pyproject.toml @platform-team
+/Makefile @platform-team

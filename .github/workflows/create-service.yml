@@ -1,0 +1,72 @@
+name: Create New Service
+
+permissions:
+  contents: write
+  actions: write
+  repository-projects: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      service_name:
+        description: 'Name of the new service (e.g., orders-api, users-service)'
+        required: true
+        type: string
+      visibility:
+        description: 'Repository visibility'
+        required: true
+        type: choice
+        options:
+          - private
+          - public
+        default: public
+      description:
+        description: 'Service description'
+        required: false
+        type: string
+
+jobs:
+  create-service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate service name
+        run: |
+          if [[ ! "${{ inputs.service_name }}" =~ ^[a-z0-9-]+$ ]]; then
+            echo "❌ Service name must contain only lowercase letters, numbers, and hyphens"
+            exit 1
+          fi
+
+      - name: Create repository from template
+        env:
+          GH_TOKEN: ${{ secrets.GH_ADMIN_TOKEN }}
+        run: |
+          gh repo create ${{ github.repository_owner }}/${{ inputs.service_name }} \
+            --template ${{ github.repository }} \
+            --${{ inputs.visibility }} \
+            --description "${{ inputs.description }}"
+
+      - name: Configure repository settings
+        env:
+          GH_TOKEN: ${{ secrets.GH_ADMIN_TOKEN }}
+        run: |
+          # Enable branch protection on main/master
+          gh api \
+            --method PUT \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository_owner }}/${{ inputs.service_name }}/branches/main/protection \
+            -f required_status_checks='{"strict":true,"contexts":["quality","docker"]}' \
+            -f enforce_admins=true \
+            -f required_pull_request_reviews='{"required_approving_review_count":1}' \
+            -f restrictions=null || echo "⚠️  Branch protection setup failed (main branch might not exist yet)"
+
+      - name: Success summary
+        run: |
+          echo "✅ Service created successfully!"
+          echo ""
+          echo "📦 Repository: https://github.com/${{ github.repository_owner }}/${{ inputs.service_name }}"
+          echo "🔧 Clone: gh repo clone ${{ github.repository_owner }}/${{ inputs.service_name }}"
+          echo ""
+          echo "Next steps:"
+          echo "1. Clone the repository"
+          echo "2. Update README with service-specific details"
+          echo "3. Start building your service"

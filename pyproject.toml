@@ -1,0 +1,52 @@
+[project]
+name = "template-fastapi-service"
+version = "0.1.0"
+description = "A production-ready FastAPI template following the Golden Path"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi==0.115.5",
+    "uvicorn[standard]==0.32.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black==24.10.0",
+    "ruff==0.6.9",
+    "pre-commit==4.0.1",
+]
+test = [
+    "pytest==8.3.3",
+    "httpx==0.27.2",
+    "pytest-cov==6.0.0",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors - catches style violations like extra whitespace
+    "F",   # pyflakes - catches unused imports, undefined variables (REAL bugs!)
+    "I",   # isort - organizes imports consistently across your team
+    "UP",  # pyupgrade - modernizes old Python syntax automatically
+    "B",   # flake8-bugbear - catches subtle bugs like mutable default arguments
+    "SIM", # flake8-simplify - suggests cleaner ways to write your code
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+skip-magic-trailing-comma = false
+
+[tool.pytest.ini_options]
+testpaths = ["app/tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+addopts = "-v --tb=short"

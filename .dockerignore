@@ -1,0 +1,15 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.git/
+.gitignore
+.coverage
+htmlcov/
+.env
+.env.local
+README.md
+Makefile
+.pre-commit-config.yaml
+app/tests/
