@@ -5,7 +5,7 @@ description = "A production-ready FastAPI template following the Golden Path"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi==0.115.5",
+    "fastapi==0.128.5",
     "uvicorn[standard]==0.32.0",
 ]
 
